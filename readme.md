@@ -20,21 +20,28 @@ import middlewareFactory from 'express-fixturer';
 - saveRoutes (optional, default: `true`) `boolean | string[]`: If true, it will create fixtures for each of your express endpoints. You can also pass an array of routes and it will only create fixtures for those routes.
 - fixtureRoutes (optional, default: `false`) `boolean | string[]`: If true, it will use the fixtures if it find them or will trigger your handler and save the response payload as a fixture.
 - fixtureBasePath (optional, default: `./`) `string`: Define the path to the folder of your fixtures.
-- hashFn (optional) `(req: express.Request) => string`: Define how to generate your hash used to identify the fixture to the right request. The default hash function will take the following elements of your request to make the hash:
+- hashFn (optional) `(req: express.Request) => string`: Define how to generate your hash used to identify the fixture to the right request. The default hash function will include `req.body, req.cookies, req.params, req.query and req.path`
+
+#### Example
+
+This will save fixtures to the `fixtures` folder.
+
 ```js
-const hashPayload = {
-  ...req.body,
-  ...req.cookies,
-  ...req.params,
-  ...req.query,
-  pathname: req.path,
-}
+const app = express();
+app.use(expressFixturer({ fixtureBasePath: './fixtures' }));
 ```
 
 ### createHash
 
 #### Description
-Utility function to generate a hash given an object, also used to define the default hashFn as so:
+Utility function to generate a hash given an object.
+
+#### import:
+```js
+import { createHash } from 'express-fixturer';
+```
+
+#### Example
 ```js
 const hashFn = (req: Request) => {
   const hashPayload = {
@@ -47,16 +54,12 @@ const hashFn = (req: Request) => {
 
   return createHash(hashPayload);
 };
-```
 
-#### import:
-```js
-import { createHash } from 'express-fixturer';
+app.use(expressFixturer({ fixtureBasePath: './fixtures', hashFn: hashFn }));
 ```
 
 ## TODO
 
-- Documentation
 - Error handling when retrieving fixtures
 - Implement string[] routes to save fixtures or not
 - Implement string[] for using fixtures or not
