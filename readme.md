@@ -2,6 +2,8 @@
 
 Express middleware that save the response payload (fixtures) of each http request against a hash and reply with those fixtures when you turn it into fixture mode.
 
+The name of the file is the hash created from the request so you get the right mocked data for each of your request.
+
 It should help you mocking endpoints so you don't have to bother updating fixtures.
 
 ## API
