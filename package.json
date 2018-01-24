@@ -1,0 +1,21 @@
+{
+  "name": "express-fixturer",
+  "version": "0.0.1",
+  "description": "Easily manage your API fixtures",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.11.0",
+    "@types/murmurhash-js": "^1.0.2",
+    "express": "^4.16.2",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "murmurhash-js": "^1.0.0"
+  }
+}
