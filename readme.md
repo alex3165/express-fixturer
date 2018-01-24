@@ -1,8 +1,8 @@
 # Express-fixturer
 
-Express middleware that save the response payload (fixtures) of each of your request against a hash created from the request and reply with those fixtures whenever your environnement is down.
+Express middleware that save the response payload (fixtures) of each http request against a hash and reply with those fixtures when you turn it into fixture mode.
 
-Never bother updating your mocks anymore.
+It should help you mocking endpoints so you don't have to bother updating fixtures.
 
 ## API
 
