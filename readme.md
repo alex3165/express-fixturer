@@ -12,6 +12,8 @@ It should help you mocking endpoints so you don't have to bother updating fixtur
 
 #### Description
 
+Create a unique hash for each http request and use this hash as a filename to save the response payload.
+
 #### How to import:
 ```js
 import middlewareFactory from 'express-fixturer';
@@ -22,7 +24,7 @@ import middlewareFactory from 'express-fixturer';
 - saveRoutes (optional, default: `true`) `boolean | string[]`: If true, it will create fixtures for each of your express endpoints. You can also pass an array of routes and it will only create fixtures for those routes.
 - fixtureRoutes (optional, default: `false`) `boolean | string[]`: If true, it will use the fixtures if it find them or will trigger your handler and save the response payload as a fixture.
 - fixtureBasePath (optional, default: `./`) `string`: Define the path to the folder of your fixtures.
-- hashFn (optional) `(req: express.Request) => string`: Define how to generate your hash used to identify the fixture to the right request. The default hash function will include `req.body, req.cookies, req.params, req.query and req.path`
+- hashFn (optional) `(req: express.Request) => object`: Define how to generate your hash used to identify the fixture to the right request. The default hash function will include `req.body, req.cookies, req.params, req.query and req.path`
 
 #### Example
 
@@ -33,36 +35,8 @@ const app = express();
 app.use(expressFixturer({ fixtureBasePath: './fixtures' }));
 ```
 
-### createHash
-
-#### Description
-Utility function to generate a hash given an object.
-
-#### import:
-```js
-import { createHash } from 'express-fixturer';
-```
-
-#### Example
-```js
-const hashFn = (req: Request) => {
-  const hashPayload = {
-    ...req.body,
-    ...req.cookies,
-    ...req.params,
-    ...req.query,
-    pathname: req.path,
-  };
-
-  return createHash(hashPayload);
-};
-
-app.use(expressFixturer({ fixtureBasePath: './fixtures', hashFn: hashFn }));
-```
-
 ## TODO
 
-- Error handling when retrieving fixtures
 - Implement string[] routes to save fixtures or not
 - Implement string[] for using fixtures or not
 - Handle nested folder structure for `fixtureBasePath`

@@ -10,31 +10,29 @@ export interface Parameters {
   saveRoutes: boolean | string[];
   fixtureRoutes: boolean | string[];
   fixtureBasePath: string;
-  hashFn: (req: Request) => number | string;
+  hashFn: (req: Request) => object;
 }
 
-export const createHash = (obj: object) =>
-  murmur2(JSON.stringify(obj)).toString();
+const createHash = (obj: object) => murmur2(JSON.stringify(obj)).toString();
 
 const defaultParams: Parameters = {
   saveRoutes: true,
   fixtureBasePath: '.',
-  hashFn: (req: Request) => {
-    const hashPayload = {
-      ...req.body,
-      ...req.cookies,
-      ...req.params,
-      ...req.query,
-      pathname: req.path,
-    };
-
-    return createHash(hashPayload);
-  },
+  hashFn: (req: Request) => ({
+    ...req.body,
+    ...req.cookies,
+    ...req.params,
+    ...req.query,
+    pathname: req.path,
+  }),
   fixtureRoutes: false,
 };
 
 const getReqPath = (req: Request, params: Parameters) =>
-  path.resolve(params.fixtureBasePath, `${params.hashFn(req)}.json`);
+  path.resolve(
+    params.fixtureBasePath,
+    `${createHash(params.hashFn(req))}.json`
+  );
 
 const middlewareFactory = (opts: Parameters) => {
   const params = {
@@ -43,12 +41,14 @@ const middlewareFactory = (opts: Parameters) => {
   };
 
   return (req: Request, res: Response, next: NextFunction) => {
+    // Create the fixtures folder
     if (!existsSync(params.fixtureBasePath)) {
       mkdirSync(params.fixtureBasePath);
     }
 
     const fixturePath = getReqPath(req, params);
 
+    // Catch the response of the request and save to a local file
     const saveRoute = () => {
       const oldSend = res.send;
       (res as any).send = (payload: any) => {
@@ -60,19 +60,28 @@ const middlewareFactory = (opts: Parameters) => {
       };
     };
 
+    // Retrieve content of fixture from request hash,
+    // if no content, and saveRoutes if true, it will call saveRoutes
     if (params.fixtureRoutes) {
       readFileAsync(fixturePath)
         .then(content => {
-          const response = JSON.parse(content.toString());
-          res.send(response);
+          try {
+            const response = JSON.parse(content.toString());
+            res.send(response);
+          } catch (err) {
+            throw new Error('Unable to parse file to JSON');
+          }
         })
-        .catch(() => {
-          console.warn(`No fixture for the path: ${fixturePath}`);
+        .catch(err => {
+          console.warn(
+            `No fixture or wrongly formatted file for the path: ${fixturePath}`
+          );
           if (params.saveRoutes) {
             saveRoute();
           }
           next();
         });
+      // Save routes if fixtureRoutes is false and saveRoutes true
     } else if (params.saveRoutes) {
       saveRoute();
       next();
