@@ -3,19 +3,34 @@
   "version": "0.0.1",
   "description": "Easily manage your API fixtures",
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
+    "clean": "rm -rf lib",
     "build": "tsc",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "prepublishOnly": "npm run clean && npm run build",
+    "version": "npm run build"
   },
-  "author": "",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "keywords": [
+    "express-middleware",
+    "fixtures",
+    "mocking",
+    "api",
+    "nodejs"
+  ],
+  "author": "Alexandre Rieux",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.11.0",
     "@types/murmurhash-js": "^1.0.2",
-    "express": "^4.16.2",
     "typescript": "^2.6.2"
   },
   "dependencies": {
+    "express": "^4.16.2",
     "murmurhash-js": "^1.0.0"
   }
 }
