@@ -6,6 +6,18 @@ The name of the file is the hash created from the request so you get the right m
 
 It should help you mocking endpoints so you don't have to bother updating fixtures.
 
+## How to get started
+Install the middleware:
+```
+npm install express-fixturer
+```
+
+Plug it to express:
+```js
+const app = express();
+app.use(expressFixturer({ fixtureBasePath: './fixtures' }));
+```
+
 ## API
 
 ### middlewareFactory
