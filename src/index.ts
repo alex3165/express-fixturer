@@ -7,10 +7,10 @@ const readFileAsync = promisify(readFile);
 
 export interface Parameters {
   // save all routes, yes no or define the routes you want to save
-  saveRoutes: boolean | string[];
-  fixtureRoutes: boolean | string[];
+  saveRoutes?: boolean | string[];
+  fixtureRoutes?: boolean | string[];
   fixtureBasePath: string;
-  hashFn: (req: Request) => object;
+  hashFn?: (req: Request) => object;
 }
 
 const createHash = (obj: object) => murmur2(JSON.stringify(obj)).toString();
@@ -31,7 +31,7 @@ const defaultParams: Parameters = {
 const getReqPath = (req: Request, params: Parameters) =>
   path.resolve(
     params.fixtureBasePath,
-    `${createHash(params.hashFn(req))}.json`
+    `${createHash(params.hashFn!(req))}.json`
   );
 
 const middlewareFactory = (opts: Parameters) => {
