@@ -11,6 +11,7 @@ export interface Parameters {
   fixtureRoutes?: boolean | string[];
   fixtureBasePath: string;
   hashFn?: (req: Request) => object;
+  logging: 'quiet' | 'verbose';
 }
 
 const createHash = (obj: object) => murmur2(JSON.stringify(obj)).toString();
@@ -26,6 +27,7 @@ const defaultParams: Parameters = {
     pathname: req.path,
   }),
   fixtureRoutes: false,
+  logging: 'verbose',
 };
 
 const getReqPath = (req: Request, params: Parameters) =>
@@ -52,9 +54,11 @@ const middlewareFactory = (opts: Parameters) => {
     const saveRoute = () => {
       const oldSend = res.send;
       (res as any).send = (payload: any) => {
-        console.log(
-          `Writing fixture for route ${req.path}, file: ${fixturePath}`
-        );
+        if (params.logging === 'verbose') {
+          console.log(
+            `Writing fixture for route ${req.path}, file: ${fixturePath}`
+          );
+        }
         writeFileSync(fixturePath, payload);
         oldSend.call(res, payload);
       };
