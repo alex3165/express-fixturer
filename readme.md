@@ -37,6 +37,7 @@ import middlewareFactory from 'express-fixturer';
 - fixtureRoutes (optional, default: `false`) `boolean | string[]`: If true, it will use the fixtures if it find them or will trigger your handler and save the response payload as a fixture.
 - fixtureBasePath (optional, default: `./`) `string`: Define the path to the folder of your fixtures.
 - hashFn (optional) `(req: express.Request) => object`: Define how to generate your hash used to identify the fixture to the right request. The default hash function will include `req.body, req.cookies, req.params, req.query and req.path`
+- logging (optional, default: `verbose`) `verbose | quiet`: If set to `verbose` it will log.
 
 #### Example
 
